@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Clasificador de Café</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.10.0"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      background: #f9f9f9;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
+      padding: 30px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    h2, h3 {
+      text-align: center;
+      color: #333;
+    }
+
+    .slider-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 6px;
+    }
+
+    .slider-value {
+      float: right;
+      color: #222;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    #predictBtn {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #predictBtn:hover {
+      background-color: #0056b3;
+    }
+
+    #resultado {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+      color: #222;
+      text-align: center;
+    }
+
+    .rules {
+      background: #eef2f3;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-top: 30px;
+    }
+
+    .rule {
+      margin-bottom: 10px;
+    }
+
+    .explanation {
+      background: #e0f7fa;
+      padding: 10px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Clasificador de Calidad del Café</h2>
+
+    <!-- SLIDERS -->
+    <div class="slider-group">
+      <label for="acidez">Acidez (pH) <span id="val-acidez" class="slider-value">5.0</span></label>
+      <input id="acidez" type="range" min="0.0" max="6.0" step="0.01" value="5.0" oninput="updateValue('acidez')">
+    </div>
+
+    <div class="slider-group">
+      <label for="cafeina">Cafeína (%) <span id="val-cafeina" class="slider-value">1.5</span></label>
+      <input id="cafeina" type="range" min="0.0" max="2.5" step="0.01" value="1.5" oninput="updateValue('cafeina')">
+    </div>
+
+    <div class="slider-group">
+      <label for="humedad">Humedad (%) <span id="val-humedad" class="slider-value">7.0</span></label>
+      <input id="humedad" type="range" min="0.0" max="12.0" step="0.1" value="7.0" oninput="updateValue('humedad')">
+    </div>
+
+    <div class="slider-group">
+      <label for="aroma">Aroma <span id="val-aroma" class="slider-value">5.0</span></label>
+      <input id="aroma" type="range" min="0.0" max="10.0" step="0.1" value="5.0" oninput="updateValue('aroma')">
+    </div>
+
+    <button id="predictBtn" onclick="predecir()">Predecir Calidad</button>
+
+    <div id="resultado"></div>
+
+    <!-- AYUDA -->
+    <div class="rules">
+      <h3>📋 Reglas Difusas</h3>
+      <div class="rule">🔹 <b>Regla 1 (Alta):</b> Acidez óptima, Cafeína media, Humedad óptima, Aroma excelente</div>
+      <div class="rule">🔹 <b>Regla 2 (Media):</b> Acidez óptima, Cafeína media, Humedad óptima, Aroma aceptable</div>
+      <div class="rule">🔹 <b>Regla 3 (Baja):</b> Acidez muy baja/alta, o Humedad muy baja/alta, o Aroma pobre</div>
+      <div class="rule">🔹 <b>Regla 4 (Baja):</b> Cafeína alta y Aroma pobre</div>
+      <div class="rule">🔹 <b>Regla 5 (Media):</b> Cafeína baja y Aroma excelente</div>
+    </div>
+
+    
+
+     <div class="info">
+      <h4>📊 Rangos Difusos de los Parámetros</h4>
+      <ul>
+        <li><b>Acidez (pH)</b>:<br>
+          Baja [4.5–5.0], Óptima [4.8–5.6], Alta [5.0–6.0]
+        </li>
+        <li><b>Cafeína (%)</b>:<br>
+          Baja [0.8–1.5], Media [1.2–2.2], Alta [1.8–2.5]
+        </li>
+        <li><b>Humedad (%)</b>:<br>
+          Baja [3.0–6.0], Óptima [4.0–10.0], Alta [8.0–12.0]
+        </li>
+        <li><b>Aroma</b>:<br>
+          Pobre [1.0–4.0], Aceptable [3.0–7.0], Excelente [6.0–10.0]
+        </li>
+      </ul>
+    </div>
+  </div>
+  </div>
+  
+  <script src="script.js"></script>
+  <script>
+    function updateValue(id) {
+      document.getElementById(`val-${id}`).innerText = document.getElementById(id).value;
+    }
+  </script>
+</body>
+</html>
